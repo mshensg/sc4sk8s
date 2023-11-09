@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sc4s-servers
+  namespace: sc4s
+  labels:
+    app: splunk-idxs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: splunk-idx
+  template:
+    metadata:
+      labels:
+        name: sc4s-server
+      namespace: sc4s
+    spec:
+      containers:
+      - name: sc4s-server
+        image: ghcr.io/splunk/splunk-connect-for-syslog/container2:2.49.8
+        resources:
+          limits:
+            cpu: "4"
+            memory: 8000Mi
+          requests:
+            cpu: "1"
+            memory: 2000Mi
+        ports:
+        - name: restapi
+          containerPort: 8089
+          protocol: TCP
+        - name: datas2s
+          containerPort: 9997
+          protocol: TCP
+        - name: internalsync
+          containerPort: 9887
+          protocol: TCP
+        - name: datahec
+          containerPort: 8088
+          protocol: TCP
+        env:
+        - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_URL
+          value: https://xxx.xxx.xxx.xxx:8088
+        - name: SPLUNK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: splunk-credential
+              key: password
+        - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_TOKEN
+          value: xxxxxxxx
+        - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_TLS_VERIFY
+          value: no
+        - name: SC4S_LISTEN_DEFAULT_TCP_PORT
+          value: 514
+        - name: SC4S_LISTEN_DEFAULT_UDP_PORT
+          value: 514
+        command: [ "/bin/bash", "/entrypoint.sh" ]
+        volumeMounts:
+        - name: sc4s-local
+          mountPath: "/etc/syslog-ng/conf.d/local"
+          readOnly: true
+      volumes:
+      - name: splunk-idx1-cm-v
+        configMap:
+          name: splunk-idx1-cm
+      restartPolicy: Always

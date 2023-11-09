@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sc4s-service
+  namespace: sc4s
+  labels:
+    app: sc4s-servers
+spec:
+  ports:
+    - name: syslog-tcp
+      protocol: TCP
+      port: 514
+      targetPort: 514
+      nodePort: 36514
+    - name: syslog-udp
+      protocol: UDP
+      port: 514
+      targetPort: 514
+      nodePort: 36514
+  selector:
+    name: sc4s-server
+  type: LoadBalancer

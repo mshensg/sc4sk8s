@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sc4s-cm
+  namespace: sc4s
+data:
+  env_file: |-
+    ---
+    SC4S_DEST_SPLUNK_HEC_DEFAULT_URL=https://xxx.xxx.xxx.xxx:8088
+    SC4S_DEST_SPLUNK_HEC_DEFAULT_TOKEN=xxxxxxxx
+    SC4S_DEST_SPLUNK_HEC_DEFAULT_TLS_VERIFY=no
+    SC4S_LISTEN_DEFAULT_TCP_PORT=8514
+    SC4S_LISTEN_DEFAULT_UDP_PORT=8514
+      
